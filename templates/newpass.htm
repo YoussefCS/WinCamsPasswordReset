@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New Password</title>
+    <link rel="stylesheet" type="text/css" href="/WinCamsPasswordReset/static/css/styles.css">
+</head>
+<body>
+    <div id="resetContainer">
+        <img src="/WinCamsPasswordReset/static/img/wincam.PNG" alt="Image" class="styledBox__image">
+        <h1 style="text-align: center;">Set New Password</h1>
+        
+        <!-- Password Requirements List -->
+        <h2>Password Requirements:</h2>
+        <ul>
+            <li>Password length must be greater than or equal to 8 characters.</li>
+            <li>Password must contain at least one uppercase letter.</li>
+            <li>Password must contain at least one lowercase letter.</li>
+            <li>Password must contain at least one special character.</li>
+        </ul>
+
+        <form id="newPasswordForm">
+            <label for="newPassword">New Password:</label><br>
+            <input type="password" id="newPassword" name="newPassword" required><br><br>
+            <label for="confirmNewPassword">Confirm New Password:</label><br>
+            <input type="password" id="confirmNewPassword" name="confirmNewPassword" required><br><br>
+            <input type="submit" value="Submit">
+        </form>
+        
+        <!-- Message div will be dynamically created and appended here -->
+        <div id="serverMessage", style="text-align: center;"></div>
+    </div>
+
+    <script>
+        document.getElementById('newPasswordForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            var newPassword = document.getElementById('newPassword').value;
+            var confirmNewPassword = document.getElementById('confirmNewPassword').value;
+
+            // Get employee_id and unique_key from the URL
+            var urlPath = window.location.pathname;
+            var pathParts = urlPath.split('/');
+            var employee_id = pathParts[3];
+            var unique_key = pathParts[4];
+
+            if (newPassword === confirmNewPassword) {
+                var data = {
+                    newPassword: newPassword
+                };
+
+                fetch(`/WinCamsPasswordReset/resetpassword/${employee_id}/${unique_key}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response from server:', data); 
+                    var serverMessageDiv = document.getElementById('serverMessage');
+                    serverMessageDiv.style.display = 'block';
+                    serverMessageDiv.textContent = data.message; // Display only the message string
+                    
+                    // Hide form elements within resetContainer
+                    var formElements = document.getElementById('resetContainer').querySelectorAll('input, label');
+                    formElements.forEach(element => {
+                        element.style.display = 'none';
+                    });
+                })
+                .catch(error => {
+                    console.error('Error changing password:', error);
+                    var serverMessageDiv = document.getElementById('serverMessage');
+                    serverMessageDiv.style.display = 'block';
+                    serverMessageDiv.textContent = 'Error occurred. Please try again.';
+                });
+            } else {
+                var serverMessageDiv = document.getElementById('serverMessage');
+                serverMessageDiv.style.display = 'block';
+                serverMessageDiv.textContent = "Passwords don't match. Please re-enter.";
+            }
+        });
+    </script>
+</body>
+</html>

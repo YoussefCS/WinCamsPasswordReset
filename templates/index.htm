@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Password Reset</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/WinCamsPasswordReset/static/css/index.css">
+</head>
+<body>
+    <div id="resetContainer">
+        <img src="/WinCamsPasswordReset/static/img/wincam.PNG" alt="Image" class="styledBox__image">
+        <h1 style="text-align: center;">Password Reset</h1>
+        <form id="resetForm">
+            <label for="employeeID">Enter Employee ID:</label><br>
+            <input type="text" id="employeeID" name="employeeID"><br><br>
+            <input type="submit" value="Reset Password">
+        </form>
+
+        <!-- Message div will be dynamically created and appended here -->
+        <div id="message", style="text-align: center;"></div>
+    </div>
+
+    <script>
+        document.getElementById('resetForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            var employeeID = document.getElementById('employeeID').value;
+
+            // Make a POST request to the Flask server endpoint
+            fetch('/WinCamsPasswordReset/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'employeeID=' + employeeID
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Create and append the message element
+                    var messageElement = document.getElementById('message');
+                    messageElement.innerText = 'An email has been sent to the user email.';
+                    messageElement.style.display = 'block';
+
+                    // Hide form
+                    document.getElementById('resetForm').style.display = 'none';
+                } else {
+                    console.error('Error:', response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Error sending password reset request:', error);
+            });
+        });
+    </script>
+</body>
+</html>

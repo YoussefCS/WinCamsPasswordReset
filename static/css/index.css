@@ -1,0 +1,54 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f5f5f5; /* Adjust background color as needed */
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.resetContainer {
+    background-color: #fff; /* Set interior color */
+    padding: 20px;
+    border: 8px solid #000; /* Thick black border */
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box; /* Include padding and border in the total width */
+    text-align: center;
+}
+
+.resetContainer::before {
+    content: "";
+    background-image: url('/static/img/wincam.PNG');
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border-radius: 8px; /* Adjust the border radius to match the container */
+    z-index: -1;
+    opacity: 0.5;
+}
+
+#resetForm {
+    margin-left: auto; /* Push the form to the right side */
+    text-align: center;
+}
+
+
+.resetContent h1,
+.resetContent label {
+    margin-top: 0; /* Remove default margins */
+    margin-bottom: 10px; /* Add space between elements */
+    text-align: center;
+}
+
+.message {
+    display: none;
+    margin-top: 20px;
+}
